@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Catogary Viz</title>
+    <script src="lib/d3.min.js"></script>
+    <script src="lib/echarts.common.min.js"></script>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+</head>
+
+<body>
+
+    <div id="CategoryViz" style="height: 800px"></div>
+
+
+    <script>
+        var categoryChart = echarts.init(document.getElementById('CategoryViz'));
+        var categoryOption;
+
+        var keycategory = [
+        //     {
+        //     chartkey: '文具',
+        //     eng: 'Stationary'
+        // },
+            {
+            chartkey: '贴纸',
+            eng: 'Sticker'
+        }, {
+            chartkey: '记事本',
+            eng: 'Notebook'
+        }, {
+            chartkey: '签字笔',
+            eng: 'Roller Pen'
+        }, {
+            chartkey: '水笔',
+            eng: 'Fountain Pen'
+        }, {
+            chartkey: '便利贴',
+            eng: 'Sticky Note'
+        }, {
+            chartkey: '铅笔',
+            eng: 'Pencil'
+        }, {
+            chartkey: '纸',
+            eng: 'Paper'
+        }, {
+            chartkey: '相册',
+            eng: 'Album'
+        }, {
+            chartkey: '书签',
+            eng: 'Bookmark'
+        }, {
+            chartkey: '收纳',
+            eng: 'Storage Supply'
+        }, {
+            chartkey: '活页',
+            eng: 'Loose Leaf Notebook'
+        }, {
+            chartkey: '便签本',
+            eng: 'Note Pads'
+        }, {
+            chartkey: '笔袋',
+            eng: 'Pencil Case'
+        }, {
+            chartkey: '橡皮',
+            eng: 'Eraser'
+        }, {
+            chartkey: '卡片',
+            eng: 'Card'
+        }, {
+            chartkey: '水彩',
+            eng: 'Water Color Pen'
+        }, {
+            chartkey: '记号笔',
+            eng: 'Marker'
+        }, {
+            chartkey: '橡皮',
+            eng: 'Eraser'
+        }, {
+            chartkey: '荧光笔',
+            eng: 'Highlighter'
+        }, {
+            chartkey: '印章',
+            eng: 'Stamp'
+        }, {
+            chartkey: '剪刀',
+            eng: 'Scissor'
+        }, {
+            chartkey: '文件夹',
+            eng: 'Folder'
+        }, {
+            chartkey: '明信片',
+            eng: 'Postcard'
+        }, {
+            chartkey: '修正带',
+            eng: 'Correction Tape'
+        }, {
+            chartkey: '信封',
+            eng: 'Envelop'
+        }, {
+            chartkey: '尺子',
+            eng: 'Ruler'
+        }, {
+            chartkey: '计划本',
+            eng: 'Planner'
+        }, {
+            chartkey: '卷笔刀',
+            eng: 'Pencil Sharpener'
+        }, {
+            chartkey: '笔筒',
+            eng: 'Pen Container'
+        }, {
+            chartkey: '胶水',
+            eng: 'Glue'
+        }, ]
+
+        $.get("cate.csv", function(csv) {
+            var data = d3.csvParse(csv);
+            //console.log(data);
+
+
+
+            var keywordArr = new Array();
+            for (var i = 0; i < data.length; i++) {
+                var mstr = data[i].Main_Business;
+                var karr = mstr.split(' ');
+                for (var j = 0; j < karr.length; j++) {
+                    var newstr = karr[j].replace(/\s/ig, '');
+                    if (newstr.length > 0) {
+                        var obj = {
+                            keyword: karr[j]
+                        };
+                        keywordArr.push(obj);
+                    }
+                }
+            }
+            //console.log(keywordArr);
+
+            var entries = d3.nest()
+                .key(function(d) {
+                    return d.keyword;
+                })
+                .entries(keywordArr).sort(function(a, b) {
+                    return b["values"].length - a["values"].length;
+                });
+
+
+            //console.log(entries);
+
+            var realdata = new Array();
+            var keyarr = new Array();
+            for (var i = 0; i < entries.length; i++) {
+                for (var j = 0; j < keycategory.length; j++) {
+                    if (entries[i]["key"] == keycategory[j]["chartkey"]) {
+                        // entries[i]["key"] =>“胶带 ”
+                        keyarr.push(keycategory[j]["eng"]); // =>  'tape'
+                        // keyarr.push(keycategory[j]["eng"]);
+                        realdata.push(entries[i]["values"].length); // => 1519
+                        break;
+                    }
+                }
+            }
+
+            // keyarr => [pen, pencil, tape]
+            // realdata => [32, 40, 1519]
+            //console.log(realdata);
+
+            categoryOption = {
+                color: ['#EDC971'],
+                title: {
+                    text: 'What Do 2000 Taobao Shops Sell Alongside Washi Tapes?'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    boundaryGap: [0, 0.01]
+                },
+                yAxis: {
+                    type: 'category',
+                    inverse: true,
+                    data: keyarr // ["pen", "pencil", "eraser"]
+                },
+                series: [{
+                    type: 'bar',
+                    data: realdata //[32, 3, 40]
+                }, ]
+            };
+
+            categoryChart.setOption(categoryOption);
+            //chart.setOption(option)
+        });
+    </script>
+
+</body>
+
+</html>

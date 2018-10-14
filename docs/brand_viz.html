@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title>Brand Viz</title>
+        <script src="lib/d3.min.js"></script>
+        <script src="lib/echarts.common.min.js"></script>
+        <script src="lib/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+
+<div id="cont" style="height: 380px; width: 100%; float: center"></div>
+
+<script>
+
+        var brandChart = echarts.init(document.getElementById('cont'));
+        var option;
+
+        var placeArr = [{brand:"kinbor", place:"Made in Mainland China"},
+                {brand:"mood", place:"Made in Mainland China"},
+                {brand:"信的恋人", place:"Made in Mainland China"},
+                {brand:"全世界路过", place:"Made in Mainland China"},
+                {brand:"mt", place:"Made in Japan"},
+                {brand:"roundtop", place:"Made in Japan"},
+                {brand:"云停", place:"Made in Japan"},
+                {brand:"仓敷", place:"Made in Japan"},
+                {brand:"marks", place:"Made in Japan"},
+                {brand:"aimezlestyle", place:"Made in Japan"},
+                {brand:"pinebook", place:"Made in Japan"},
+                {brand:"mindwave", place:"Made in Japan"},
+                {brand:"spacecraft", place:"Made in Japan"},
+                {brand:"tsutsumu", place:"Made in Japan"},
+                {brand:"向鱼", place:"Made in Mainland China"},
+                {brand:"daisyland", place:"Made in Mainland China"},
+                {brand:"暮光之城", place:"Made in Mainland China"},
+                {brand:"infeel", place:"Made in Mainland China"},
+                {brand:"墨下", place:"Made in Mainland China"},
+                {brand:"naonao", place:"Made in Mainland China"},
+                {brand:"天空岛", place:"Made in Mainland China"},
+                {brand:"陌境", place:"Made in Mainland China"},
+                {brand:"九穗禾", place:"Made in Mainland China"},
+                {brand:"糖诗", place:"Made in Mainland China"},
+                {brand:"游氧", place:"Made in Mainland China"},
+                {brand:"一梦天下", place:"Made in Mainland China"},
+                {brand:"eno", place:"Made in Mainland China"},
+                {brand:"纸染", place:"Made in Mainland China"},
+                {brand:"芯陌文创", place:"Made in Mainland China"},
+                {brand:"拾光", place:"Made in Mainland China"},
+                {brand:"沐染", place:"Made in Mainland China"},
+                {brand:"bentotohouse", place:"Made in Mainland China"},
+                {brand:"纸墨生活", place:"Made in Mainland China"},
+                {brand:"故宫", place:"Made in Mainland China"},
+                {brand:"晨光", place:"Made in Mainland China"},
+                {brand:"爱丽丝茶会", place:"Made in Mainland China"},
+                {brand:"花漾和风", place:"Made in Mainland China"},
+                {brand:"元气屋", place:"Made in Mainland China"},
+                {brand:"回梦组", place:"Made in Mainland China"},
+                {brand:"kingjim", place:"Made in Japan"},
+                {brand:"典典", place:"Made in Mainland China"},
+                {brand:"宅猫居", place:"Made in Mainland China"},
+                {brand:"meatball", place:"Made in Mainland China"},
+                {brand:"页岩组", place:"Made in Mainland China"},
+                {brand:"新七天", place:"Made in Mainland China"},
+                {brand:"luckytape", place:"Made in Mainland China"},
+                {brand:"花间一本", place:"Made in Mainland China"},
+                {brand:"基研所", place:"Made in Taiwan"},
+                {brand:"归隐组", place:"Made in Mainland China"},
+                {brand:"呶猫", place:"Made in Mainland China"},
+                {brand:"kurumi", place:"Made in Mainland China"},
+                {brand:"neverland", place:"Made in Mainland China"},
+                {brand:"sun组", place:"Made in Mainland China"},
+                {brand:"楠山", place:"Made in Mainland China"},
+                {brand:"deer", place:"Made in Mainland China"},
+                {brand:"arukas", place:"Made in Taiwan"},
+                {brand:"山凹凹", place:"Made in Mainland China"},
+                {brand:"小径", place:"Made in Taiwan"},
+                {brand:"梅刺小铺", place:"Made in Taiwan"},
+                {brand:"来嘛英雄", place:"Made in Mainland China"},
+                {brand:"卓大王", place:"Made in Mainland China"},
+                {brand:"玖月恶时事", place:"Made in Mainland China"},
+                {brand:"苏州博物馆", place:"Made in Mainland China"},
+                {brand:"有鲸工作室", place:"Made in Mainland China"},
+                {brand:"变幻墨汁店", place:"Made in Mainland China"},
+                {brand:"misstina", place:"Made in Mainland China"},
+                {brand:"kaze", place:"Made in Mainland China"},
+                {brand:"造船k车间", place:"Made in Mainland China"},
+                {brand:"花间集", place:"Made in Mainland China"},
+                {brand:"bande", place:"Made in Japan"},
+                {brand:"primenakamura", place:"Made in Japan"},
+                {brand:"三渡文创", place:"Made in Mainland China"},
+                {brand:"小王纸", place:"Made in Mainland China"},
+                {brand:"陌墨", place:"Made in Mainland China"},
+                {brand:"bentoto", place:"Made in Mainland China"},
+                {brand:"TGS", place:"Made in Mainland China"},
+                {brand:"本小姐", place:"Made in Mainland China"},
+                {brand:"花狸猫窝", place:"Made in Mainland China"},
+                {brand:"梦中占", place:"Made in Mainland China"},
+                {brand:"cube3", place:"Made in Mainland China"},
+                {brand:"soda", place:"Made in Mainland China"},
+                {brand:"菌物女", place:"Made in Mainland China"},
+                {brand:"大象君", place:"Made in Mainland China"},
+                {brand:"长诗", place:"Made in Mainland China"},
+                {brand:"黛西", place:"Made in Mainland China"},
+                {brand:"talkness", place:"Made in Mainland China"},
+                {brand:"月曜日手帐", place:"Made in Mainland China"},
+                {brand:"本初", place:"Made in Mainland China"},
+                {brand:"ky", place:"Made in Taiwan"},
+                {brand:"冷食堂", place:"Made in Mainland China"},
+                {brand:"kami", place:"Made in Mainland China"},
+                {brand:"沐清", place:"Made in Mainland China"},
+                {brand:"紙遊", place:"Made in Taiwan"},
+                {brand:"喵啪叽", place:"Made in Mainland China"},
+                {brand:"mint", place:"Made in Taiwan"},
+                {brand:"搬砖组", place:"Made in Mainland China"},
+                {brand:"n1ng", place:"Made in Mainland China"},
+                {brand:"menu", place:"Made in Mainland China"},
+                {brand:"从前书", place:"Made in Mainland China"},
+                {brand:"捌光", place:"Made in Taiwan"},
+                {brand:"百家讲坛", place:"Made in Mainland China"},
+                {brand:"everein", place:"Made in Taiwan"},
+                {brand:"wali", place:"Made in Taiwan"},
+                {brand:"酪梨", place:"Made in Taiwan"},
+                {brand:"台", place:"Made in Taiwan"},
+        ];
+
+        $.get("final03.csv", function(csv) {
+
+                var data = d3.csvParse(csv);
+                var cleanData = new Array();
+                //console.log(data);
+                for(var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        if(item.Name.indexOf("和纸胶带") != -1) {
+                                var isfind = false;
+                                for(var j = 0; j < placeArr.length; j++) {
+                                        var pitem = placeArr[j];
+                                        var brand = changeFormat(item.Name);
+
+                                        if(brand.indexOf(pitem.brand) != -1) {
+                                                item.newbrand = pitem.brand;
+                                                item.place = pitem.place;
+                                                isfind = true;
+                                                break;
+                                        }
+                                }
+
+                                if(!isfind) {
+                                        item.newbrand = 'Uncategorized';
+                                        item.place = 'Made in: Uncategorized';
+                                }
+
+                                cleanData.push(item);
+                        }
+                }
+
+                //console.log(cleanData);
+
+                var entries = d3.nest()
+                        .key(function (d) {
+                                return d.place;
+                        })
+                        .entries(cleanData);
+                // ada order
+                // entries [taiwan, mainland, other, japan]
+
+                // a = 1, b = 3
+                // temp = a
+                // a = b, a = b = 3
+                // b = temp
+                var temp = entries[0]
+                entries[0] = entries[1];
+                entries[1] = temp;
+                //console.log(entries);
+                  //=> entries [mainland, taiwan, others, japan]
+
+                // var parr = genPriceData(entries);
+                // var data1 = parr[0];
+                // var data2 = parr[1];
+
+                var qarr = genQuantityData(entries);
+                var data1 = qarr[0];
+                var data2 = qarr[1];
+
+                option = {
+                        title: {
+                            text: 'Market Share According to Sales Volume',
+                            left: 'center',
+                            padding: [5,10,10,10],
+                            textStyle:{
+                                fontFamily: 'Microsoft YaHei'
+                            }
+                        },
+                        tooltip: {
+                                trigger: 'item',
+                                position: ['33%','43%'],
+                                formatter: "{a} {b} <br/> Item Quantity: {c} ({d}%)",
+                                backgroundColor: 'rgba(00,00,00,0)',
+                                textStyle:{
+                                    color: '#17202A',
+                                    align:'center'
+                                }
+                        },
+
+                        series: [
+                                {
+                                        name:' ',
+                                        color: ['#AED6F1','#F08080', '#A9DFBF' , '#fff265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'], //ada,defaulr color
+                                        type:'pie',
+                                        selectedMode: 'single',
+                                        radius: ['40%', '60%'],
+                                        label: {
+                                                position: 'inner',
+                                                fontSize: 12,
+                                                color: '#000000',
+                                                align: 'left'
+                                        },
+                                        labelLine: {
+                                                normal: {
+                                                        show: false,
+                                                        //length: 1
+                                                }
+                                        },
+                                        data:data1,
+                                        avoidLabelOverlap: true
+                                },
+                                {
+                                        name:'Brand:',
+                                        color: ['#85C1E9','#ABEBC6' ,'#F4D03F','#95A5A6', '#AED6F1', '#7FB3D5','#5499C7', '#2980B9','#2471A3', '#1F618D', '#1A5276', '#154360', '#21618C', '#2E86C1', '#3498DB', '#5DADE2'],//ada,defaulr color
+                                        type:'pie',
+                                        radius: ['65%', '85%'],
+                                        avoidLabelOverlap: false,
+                                        label: {
+                                            normal: {
+                                                show: false
+                                            }
+                                        },
+                                        labelLine: {
+                                            normal: {
+                                                show: false
+                                            }
+                                        },
+                                        data: data2
+                                }
+                        ]
+                };
+
+                brandChart.setOption(option);
+        });
+
+        function changeFormat(str) {
+                var newstr = str.replace(/\s/ig,'');
+                newstr = newstr.toLowerCase();
+                return newstr;
+        }
+
+        function genQuantityData(entries) {
+                var arr = new Array();
+                var subArr = new Array();
+                var otherBrand = 0;
+                var totalBrand = 0; // total brand quantity
+                for(var i = 0; i < entries.length; i++) {
+                        var place = entries[i]["key"];
+                        var varr = entries[i]["values"];
+                        var count = 0;
+                        for(var j = 0; j < varr.length; j++) {
+                                count += parseFloat(varr[j]["Quantity"]);
+                        }
+
+                        arr.push({name: place, value:count});
+
+                        // 计算子分类营业额
+                        var ee = d3.nest()
+                                .key(function (d) {
+                                        return d.newbrand;
+                                })
+                                .entries(varr);
+
+                        for(var k = 0; k < ee.length; k++) {
+                                var bstr = ee[k]["key"];
+                                var karr = ee[k]["values"];
+                                var count = 0;
+                                for(var kk = 0; kk < karr.length; kk++) {
+                                        count += parseFloat(karr[kk]["Quantity"]);
+                                }
+                                totalBrand += count;
+                                subArr.push({name:bstr, value:count.toFixed(2)});
+                        }
+                }
+
+                // return [arr, subarr]
+                // sub < 0.01*totalBrand => other
+                // subArr -> brandArr
+                // totalBrand
+
+
+                var brandArr = new Array();
+                for(var i = 0; i < subArr.length; i++) {
+                  if(+subArr[i]["value"] < totalBrand/100){
+                    otherBrand += +subArr[i]["value"];
+                  }else{
+                    brandArr.push({name: subArr[i]["name"], value: subArr[i]["value"]});
+                  }
+                }
+                brandArr.push({name: "Individually <1% (Sum)", value: otherBrand});
+                return [arr, brandArr];
+        }
+
+</script>
+
+</body>
+</html>

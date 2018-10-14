@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+        <meta charset="utf-8">
+        <script src="lib/d3.min.js"></script>
+        <script src="lib/echarts.common.min.js"></script>
+        <script src="lib/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+
+</head>
+<body style="height: 100%; margin: 0;" >
+<div id="container" style="height: 100%"></div>
+
+<script type="text/javascript">
+
+                var dom = document.getElementById("container");
+                var myChart = echarts.init(dom);
+                option = null;
+
+                var data;
+
+                // $.get("data/douban_by_location.csv", function(csv) {
+                $.get("douban_by_location.csv", function(csv) {
+                        var arr = d3.csvParse(csv);
+                        //console.log(arr);
+
+                        data = new Array();
+                        for(var i = 0; i < arr.length; i++) {
+                                data.push({
+                                        name: arr[i]["City"],
+                                        value: [arr[i]["Lng"], arr[i]["Lat"], arr[i]["Number"]]
+                                });
+                        }
+                        //console.log(data);
+
+                        option = {
+                                title: {
+                                        text: 'Distrubution of Washi Tape Customers',
+                                        left: 'center',
+                                        padding: 20,
+                                        textStyle:{
+                                                fontFamily: 'Microsoft YaHei'
+                                        }
+                                },
+                                tooltip: {
+                                        trigger: 'item',
+                                    formatter: function (params) {
+                                        //console.log(params);
+                                        return params.data.name + "</br> customer number: " + params.value[2]
+                                    }
+
+                                },
+                                bmap: {
+                                        center: [104.114129, 37.550339],
+                                        zoom: 5,
+                                        roam: true,
+                                        mapStyle: {
+                                                styleJson: [{
+                                                        'featureType': 'water',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#d1d1d1'
+                                                        }
+                                                }, {
+                                                        'featureType': 'land',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#f3f3f3'
+                                                        }
+                                                }, {
+                                                        'featureType': 'railway',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'highway',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#fdfdfd'
+                                                        }
+                                                }, {
+                                                        'featureType': 'highway',
+                                                        'elementType': 'labels',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'arterial',
+                                                        'elementType': 'geometry',
+                                                        'stylers': {
+                                                                'color': '#fefefe'
+                                                        }
+                                                }, {
+                                                        'featureType': 'arterial',
+                                                        'elementType': 'geometry.fill',
+                                                        'stylers': {
+                                                                'color': '#fefefe'
+                                                        }
+                                                }, {
+                                                        'featureType': 'poi',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'green',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'subway',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'manmade',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#d1d1d1'
+                                                        }
+                                                }, {
+                                                        'featureType': 'local',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#d1d1d1'
+                                                        }
+                                                }, {
+                                                        'featureType': 'arterial',
+                                                        'elementType': 'labels',
+                                                        'stylers': {
+                                                                'visibility': 'off'
+                                                        }
+                                                }, {
+                                                        'featureType': 'boundary',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#fefefe'
+                                                        }
+                                                }, {
+                                                        'featureType': 'building',
+                                                        'elementType': 'all',
+                                                        'stylers': {
+                                                                'color': '#d1d1d1'
+                                                        }
+                                                }, {
+                                                        'featureType': 'label',
+                                                        'elementType': 'labels.text.fill',
+                                                        'stylers': {
+                                                                "visibility" : "off"
+                                                        }
+                                                }]
+                                        }
+                                },
+                                series: [
+                                        {
+                                                name: '手账顾客数量',
+                                                type: 'scatter',
+                                                coordinateSystem: 'bmap',
+                                                data: data,
+                                                symbolSize: function (val) {
+                                                    if (+val[2] > 10000){
+                                                        return (val[2]/500)
+                                                    } else {
+                                                        return val[2]/250
+                                                    }
+                                                },
+                                                label: {
+                                                        normal: {
+                                                                formatter: '{b}',
+                                                                position: 'right',
+                                                                show: false
+                                                        },
+                                                        emphasis: {
+                                                                show: false
+                                                        }
+                                                },
+                                                itemStyle: {
+                                                        normal: {
+                                                                color: '#F08080' // ada color
+                                                        }
+                                                }
+                                        }
+                                ]
+                        };
+
+                        if (option && typeof option === "object") {
+                                myChart.setOption(option, true);
+                        }
+                });
+
+
+</script>
+</body>
+</html>

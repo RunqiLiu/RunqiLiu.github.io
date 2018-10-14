@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title>Shop Location Crawler</title>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=LEvZgBGNlGVYXNxoN2hgV0FiObKzslGi"></script>
+        <script src="lib/d3.min.js"></script>
+        <script src="lib/echarts.common.min.js"></script>
+        <script src="lib/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+
+<div id="info"></div>
+
+
+<script>
+
+        var locationIdx = 0;
+
+        var entries;
+        var isadd = false;
+
+        var geocoder = new BMap.Geocoder();
+        // geocoder.getPoint("山东 淄博", function(point) {
+        //         console.log(point);
+        //         geocoder.getLocation(point, function(result) {
+        //                 console.log(result);
+        //         });
+        // });
+
+        var csvData = new Array();
+        csvData.push(["Province,City,Number,Lng,Lat"]);
+
+        $.get("和纸胶带.csv", function(csv) {
+
+                var data = d3.csvParse(csv);
+
+                entries = d3.nest()
+                        .key(function (d) {
+                                return d.Location;
+                        })
+                        .entries(data)
+                        .sort(function(a, b) {
+                                return b["values"].length - a["values"].length;
+                        });
+
+                console.log(entries);
+
+                startParseLocation();
+        });
+
+        function startParseLocation() {
+
+                console.log("#" + locationIdx + ": start");
+                if(locationIdx == entries.length) {
+                        console.log("地址解析完毕");
+                        console.log(csvData);
+
+                        // download stuff
+                        var fileName = "shop_by_location.csv";
+                        var buffer = csvData.join("\n");
+                        var blob = new Blob([buffer], {
+                                "type": "text/csv;charset=utf8;"
+                        });
+                        var link = document.createElement("a");
+
+                        if(link.download !== undefined) { // feature detection
+                                // Browsers that support HTML5 download attribute
+                                link.setAttribute("href", window.URL.createObjectURL(blob));
+                                link.setAttribute("download", fileName);
+                        }
+                        else {
+                                // it needs to implement server side export
+                                link.setAttribute("href", "http://www.example.com/export");
+                        }
+                        link.innerHTML = "Export to CSV";
+                        //document.body.appendChild(link);
+                        $("#info").append(link);
+
+                        return;
+                }
+
+                if(entries[locationIdx]["key"] == "无") {
+                        locationIdx++;
+                        startParseLocation();
+                } else {
+                        console.log(entries[locationIdx]["key"]);
+                        geocoder.getPoint(entries[locationIdx]["key"], function(point) {
+                                geocoder.getLocation(point, function(result) {
+                                        if(result != null) {
+                                                console.log(result);
+
+                                                // 有用的数据
+                                                csvData.push([result.addressComponents.province, result.addressComponents.city, entries[locationIdx]["values"].length, result.point.lng, result.point.lat]);
+
+                                                // isadd = false;
+                                                locationIdx++;
+                                                startParseLocation();
+                                        } else {
+
+                                                locationIdx++;
+                                                startParseLocation();
+
+                                                // if(!isadd) {
+                                                //         var lstr = entries[locationIdx]["key"];
+                                                //         entries[locationIdx]["key"] = lstr.substring(0, lstr.length-1) + "市";
+                                                //         isadd = true;
+                                                //         startParseLocation();
+                                                // } else {
+                                                //         isadd = false;
+                                                //         locationIdx++;
+                                                //         startParseLocation();
+                                                // }
+                                        }
+                                });
+                        });
+                }
+        }
+
+</script>
+
+</body>
+</html>
